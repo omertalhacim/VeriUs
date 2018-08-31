@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-
-#DESCRIPTION KISMI ASLINDA TITLE. (Açıklama kısmı bu kodda yok)
-
 import json
 import csv
 import scrapy
@@ -9,7 +6,7 @@ import scrapy
 class N11Spider(scrapy.Spider):
     name = 'n11'
     start_urls = ['https://www.n11.com/']
-    download_delay = 0.002
+    download_delay = 0.01
 
     def parse(self,response):
         categories_url = response.css('li.subCatMenuItem a::attr(href)').extract()
@@ -31,9 +28,11 @@ class N11Spider(scrapy.Spider):
     def parse_product(self, response):
         pro_title = response.css('h1.proName::text').extract_first().replace('\n', ' ').strip()
         pro_categories = response.css('div.breadcrumb a::attr(title)').extract()
-        yield_value = [pro_title] + pro_categories
+        pro_description = response.css('section.tabPanelItem div').extract()
+        yield_value = [pro_title] + [str(pro_description)] + pro_categories
         urunDict = {}
-        urunDict["Description"] = yield_value[0]
-        for i in range(1, len(yield_value)):
-            urunDict[str(i) + ". Category"] = yield_value[i]
+        urunDict["Title"] = yield_value[0]
+        urunDict["Description"] = yield_value[1]
+        for i in range(2, len(yield_value)):
+            urunDict[str(i-1) + ". Category"] = yield_value[i]
         yield urunDict
