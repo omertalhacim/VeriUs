@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+#DESCRIPTION KISMI ASLINDA TITLE. (Açıklama kısmı bu kodda yok)
+
 import json
 import csv
 import scrapy
